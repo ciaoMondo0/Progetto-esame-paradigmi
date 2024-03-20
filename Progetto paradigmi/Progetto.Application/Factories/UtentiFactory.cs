@@ -1,4 +1,7 @@
-﻿using Progetto_paradigmi.Progetto.Application.DTO;
+﻿using Microsoft.Graph.Models;
+using Progetto_paradigmi.Progetto.Application.DTO;
+using System.Security.Claims;
+
 using Progetto_paradigmi.Progetto.Models.Entities;
 
 namespace Progetto_paradigmi.Progetto.Application.Factories
@@ -14,8 +17,21 @@ namespace Progetto_paradigmi.Progetto.Application.Factories
                 Surname = dto.Surname,
                 Email = dto.Email,
                 Password = dto.Password,
-                Id = dto.Id
+                
             };
+        }
+
+        public List<Claim> CreateClaimsToken(Utenti utenti)
+        {
+        return new List<Claim>
+    {
+          
+        new Claim("Id", utenti.Id.ToString()),
+        new Claim("Email", utenti.Email),
+        new Claim("Nome", utenti.Name),
+        new Claim("Cognome", utenti.Surname),
+        
+    };
         }
     }
 }

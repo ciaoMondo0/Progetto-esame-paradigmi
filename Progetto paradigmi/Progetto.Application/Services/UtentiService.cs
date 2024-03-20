@@ -2,6 +2,8 @@
 using Progetto_paradigmi.Progetto.Application.DTO;
 using Progetto_paradigmi.Progetto.Application.Interfaces;
 using Progetto_paradigmi.Progetto.Models.Repositories;
+using Progetto_paradigmi.Progetto.Application.Options;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Progetto_paradigmi.Progetto.Application.Services
 {
@@ -10,6 +12,8 @@ namespace Progetto_paradigmi.Progetto.Application.Services
     public class UtentiService
     {
         private readonly UtentiRepository _userRepository;
+        
+
 
         public UtentiService(UtentiRepository userRepository)
         {
@@ -18,11 +22,23 @@ namespace Progetto_paradigmi.Progetto.Application.Services
 
         public void CreateUser(UtentiDTO userDto)
         {
-            var newUser = new Utenti() { Name = userDto.Name, Surname = userDto.Surname, Email = userDto.Email, Password = userDto.Password, Id = userDto.Id };
-            _userRepository.Aggiungi(newUser);
-            _userRepository.Save();
+            var newUser = new Utenti() { Name = userDto.Name, Surname = userDto.Surname, Email = userDto.Email, Password = userDto.Password};
+            var user = _userRepository.GetUserByEmail(newUser.Email);
+            {
+                if(user != null)
+                {
+                    throw new Exception("Email is already used");
+                } else
+                {
+                    _userRepository.Aggiungi(newUser);
+                    _userRepository.Save();
+                }
+            } 
+          
         }
         
+
+        /*
         public UtentiDTO GetUserByEmail(string email)
         {
             var user = _userRepository.GetUserByEmail(email);
@@ -59,8 +75,12 @@ namespace Progetto_paradigmi.Progetto.Application.Services
             _userRepository.Elimina(user);
             _userRepository.Save();
         }
+        */
         
+
     }
+
+    
 
 
 

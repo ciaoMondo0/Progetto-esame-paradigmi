@@ -48,9 +48,9 @@ namespace Progetto_paradigmi.Progetto.Application.Services
             _distributionListRepository.Save();
         }
        
-        public void AddMemberToDistributionList(RecipientsDTO dto)
+        public void AddMemberToDistributionList(RecipientsDTO dto, int distributionListId)
         {
-            var distributionList = _distributionListRepository.GetAll().FirstOrDefault(dl => dl.Id == dto.DistributionListId);
+            var distributionList = _distributionListRepository.GetAll().FirstOrDefault(dl => dl.Id == distributionListId);
             if (distributionList == null)
             {
                 throw new Exception("Distribution list not found.");
@@ -70,27 +70,31 @@ namespace Progetto_paradigmi.Progetto.Application.Services
                   
                     _recipientsRepository.Aggiungi(member);
                     _recipientsRepository.Save();
-                    var listeDestinatari = new RecipientsList { DistributionListId = dto.DistributionListId, RecipientId = member.Id };
+                    var listeDestinatari = new RecipientsList { DistributionListId = distributionListId, RecipientId = member.Id };
                     _recipientsListRepository.Aggiungi(listeDestinatari);
                     _recipientsListRepository.Save();
                 }
                 else
                 {
 
-                    var listeDestinatari = new RecipientsList { DistributionListId = dto.DistributionListId, RecipientId = existingRecipient.Id };
+                    var listeDestinatari = new RecipientsList { DistributionListId = distributionListId, RecipientId = existingRecipient.Id };
                     _recipientsListRepository.Aggiungi(listeDestinatari);
                     _recipientsListRepository.Save();
                 }
                 }
             }
 
-         public void RemoveMemberFromDistributionList(RecipientsDTO dto)
+         public void RemoveMemberFromDistributionList(RecipientsDTO dto, int distributionListId)
             {
                 foreach (var email in dto.EmailRecipients)
                 {
 
-                var distributionList = _distributionListRepository.GetAll().FirstOrDefault(dl => dl.Id == dto.DistributionListId);
-                    var recipient = _recipientsRepository.GetAll().FirstOrDefault(r => r.Email == email);
+                var distributionList = _distributionListRepository.GetAll().FirstOrDefault(dl => dl.Id == distributionListId);
+                if (distributionList == null)
+                {
+                    throw new Exception("Distribution list not found.");
+                }
+                var recipient = _recipientsRepository.GetAll().FirstOrDefault(r => r.Email == email);
                     if (recipient == null)
                     {
                         throw new Exception("Recipient not found.");
@@ -112,7 +116,39 @@ namespace Progetto_paradigmi.Progetto.Application.Services
 
         }
 
-            public List<string> GetRecipientLists(string recipientEmail, int ownerId)
+        public List<DistributionList> GetDistributionListsByOwnerId(int ownerId)
+        {
+            
+            var distributionLists = _distributionListRepository.GetAll()
+                .Where(dl => dl.OwnerId == ownerId)
+                .ToList();
+
+            return distributionLists;
+        }
+
+        public List<string> GetRecipientsByOwnerId(int ownerId)
+        {
+            var distributionLists = _distributionListRepository.GetAll()
+                .Where(dl => dl.OwnerId == ownerId)
+                .ToList();
+
+            var recipientIds = distributionLists
+                .SelectMany(dl => _recipientsListRepository.GetAll()
+                    .Where(rl => rl.DistributionListId == dl.Id)
+                    .Select(rl => rl.RecipientId))
+                .Distinct()
+                .ToList();
+
+ 
+            var recipientEmails = _recipientsRepository.GetAll()
+                .Where(r => recipientIds.Contains(r.Id))
+                .Select(r => r.Email)
+                .ToList();
+
+            return recipientEmails;
+        }
+
+        public List<DistributionList> GetRecipientLists(string recipientEmail, int ownerId)
             {
                 var recipient = _recipientsRepository.GetAll()
                     .FirstOrDefault(r => r.Email == recipientEmail);
@@ -128,9 +164,12 @@ namespace Progetto_paradigmi.Progetto.Application.Services
                 .Select(rl => rl.DistributionListId)
                 .ToList();
 
-            var distributionListNames = recipientLists.Select(id => _distributionListRepository.GetById(id).Name).ToList();
+            var distributionLists = _distributionListRepository.GetAll()
+       .Where(dl => recipientLists.Contains(dl.Id) && dl.OwnerId == ownerId)
+       .ToList();
 
-            return distributionListNames;
+
+            return distributionLists;
 
         }
     }

@@ -25,6 +25,19 @@ namespace Progetto_paradigmi.Progetto.Models.Repositories
             return _ctx.User.Where(u => u.Email == email).FirstOrDefault();
 
         }
-        
+
+        public Utenti GetUserByEmailAndPassword(string email, string password)
+        {
+            return _ctx.User.Where(u => u.Email == email && u.Password == password).FirstOrDefault();
+        }
+
+        public Utenti GetById(int id)
+        {
+            return _ctx.User.Where(u => u.Id == id).FirstOrDefault();
+        }
+
+
+
+
     }
 }

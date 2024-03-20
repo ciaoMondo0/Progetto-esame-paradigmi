@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Progetto_paradigmi.Progetto.Application.DTO;
+using Progetto_paradigmi.Progetto.Application.Interfaces;
 using Progetto_paradigmi.Progetto.Application.Services;
+using Progetto_paradigmi.Progetto.Application.Validators;
 
 namespace Progetto_paradigmi.Progetto.Web
 {
@@ -9,18 +11,34 @@ namespace Progetto_paradigmi.Progetto.Web
     public class UtentiController : ControllerBase
     {
         private readonly UtentiService _userService;
+        private readonly TokenService _tokenService;
 
-        public UtentiController(UtentiService userService)
+        public UtentiController(UtentiService userService, TokenService tokenService)
         {
             _userService = userService;
+            _tokenService = tokenService;
         }
 
         [HttpPost("new")]
         public IActionResult CreateUser([FromBody] UtentiDTO userDto)
         {
-            _userService.CreateUser(userDto);
-            return Ok();
+            var validator = new CreateUserValidator();
+            var result = validator.Validate(userDto);
+            if (result.IsValid)
+            {
+                _userService.CreateUser(userDto);
+
+                return Ok();
+            } else
+            {
+                return BadRequest();
+            }
         }
+
+
+
+
+        /*
         
         [HttpGet("{email}")]
         public IActionResult GetUserByEmail(string email)
@@ -59,8 +77,19 @@ namespace Progetto_paradigmi.Progetto.Web
             {
                 return NotFound(ex.Message);
             }
+        }*/
+
+
+        [HttpPost]
+        [Route("login")]
+        public IActionResult LogIn(CreateTokenRequest tokenRequest)
+        {
+            String token = _tokenService.CreateToken(tokenRequest);
+
+            return Ok(new CreateTokenResponse(token));
         }
         
+
 
     }
 

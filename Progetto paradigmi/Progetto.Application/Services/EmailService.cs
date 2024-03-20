@@ -34,7 +34,7 @@ namespace Progetto_paradigmi.Progetto.Application.Services
 
 
 
-        public async Task SendEmailAsync(string subject, string body, int DistributionId)
+        public async Task SendEmailAsync(string subject, string body, int DistributionId, int userId)
         {
             var clientCredential = new ClientSecretCredential(_emailOption.TenantId
         , _emailOption.ClientId
@@ -48,6 +48,10 @@ namespace Progetto_paradigmi.Progetto.Application.Services
             if (distributionList == null)
             {
                 throw new Exception("Distribution list not found.");
+            }
+            if (distributionList.OwnerId != userId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to send emails to this distribution list.");
             }
 
             var recipients = (from rl in _recipientsListRepository.GetAll()

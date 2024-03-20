@@ -10,17 +10,17 @@ namespace Progetto_paradigmi.Progetto.Application.Validators
         public CreateUserValidator() {
             RuleFor(r => r.Email)
                     .NotEmpty()
-                    .WithMessage("")
+                    .WithMessage("Email is required.")
                     .NotNull()
-                    .WithMessage("");
+                    .WithMessage("Email is required.");
 
             RuleFor(r => r.Password)
                 .NotEmpty()
-                .WithMessage("")
+                .WithMessage("Password is required.")
                 .NotNull()
-                .WithMessage("")
+                .WithMessage("Password is required.")
                 .MinimumLength(6)
-                .WithMessage("");
+                .WithMessage("Password must be at least 6 characters long.");
                  
 
         }
