@@ -1,4 +1,4 @@
-﻿using Progetto_paradigmi.Progetto.Models.Responses;
+﻿using Progetto_paradigmi.Progetto.Application.Responses;
 
 namespace Progetto_paradigmi.Progetto.Application.Factories
 {

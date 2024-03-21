@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Progetto_paradigmi.Progetto.Application.Interfaces;
+using Progetto_paradigmi.Progetto.Application.Responses;
 
 namespace Progetto_paradigmi.Progetto.Application.Factories
 {

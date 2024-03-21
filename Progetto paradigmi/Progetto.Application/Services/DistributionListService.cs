@@ -100,15 +100,15 @@ namespace Progetto_paradigmi.Progetto.Application.Services
                         throw new Exception("Recipient not found.");
                     }
                
-                var recipientListEntry = _recipientsListRepository.FindByIds(distributionList.Id, recipient.Id);
+                var recipientListFound = _recipientsListRepository.FindByIds(distributionList.Id, recipient.Id);
 
-                if (recipientListEntry == null)
+                if (recipientListFound == null)
                 {
                     throw new Exception($"Recipient with email {email} not found in the specified distribution list.");
                 }
 
                
-                _recipientsListRepository.Delete(recipientListEntry);
+                _recipientsListRepository.Delete(recipientListFound);
             }
 
             
@@ -148,7 +148,7 @@ namespace Progetto_paradigmi.Progetto.Application.Services
             return recipientEmails;
         }
 
-        public List<DistributionList> GetRecipientLists(string recipientEmail, int ownerId)
+        public List<DistributionList> GetRecipientLists(string recipientEmail, int ownerId, int from, int num, out int totalNum)
             {
                 var recipient = _recipientsRepository.GetAll()
                     .FirstOrDefault(r => r.Email == recipientEmail);
@@ -164,12 +164,16 @@ namespace Progetto_paradigmi.Progetto.Application.Services
                 .Select(rl => rl.DistributionListId)
                 .ToList();
 
+         
             var distributionLists = _distributionListRepository.GetAll()
-       .Where(dl => recipientLists.Contains(dl.Id) && dl.OwnerId == ownerId)
-       .ToList();
+        .Where(dl => recipientLists.Contains(dl.Id) && dl.OwnerId == ownerId)
+        .ToList();
 
 
-            return distributionLists;
+            totalNum = distributionLists.Count;
+            var paginatedLists = distributionLists.Skip(from).Take(num).ToList();
+
+            return paginatedLists;
 
         }
     }

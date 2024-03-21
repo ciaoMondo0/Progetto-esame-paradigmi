@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Progetto_paradigmi.Progetto.Application.DTO;
 using Progetto_paradigmi.Progetto.Application.Interfaces;
 using Progetto_paradigmi.Progetto.Application.Options;
@@ -7,6 +9,9 @@ using System.Security.Claims;
 
 namespace Progetto_paradigmi.Progetto.Web
 {
+    [ApiController]
+    [Route("api/v1/[controller]")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EmailController : Controller
     {
         

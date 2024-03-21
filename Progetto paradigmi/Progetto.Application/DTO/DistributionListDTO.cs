@@ -5,6 +5,8 @@ namespace Progetto_paradigmi.Progetto.Application.DTO
         {
             public string Name { get; set; }
         public string OwnerEmail { get; set; }
+
+        
     }
     
 }

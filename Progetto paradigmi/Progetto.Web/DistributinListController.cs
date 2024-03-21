@@ -1,19 +1,18 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+using Progetto_paradigmi.Progetto.Application.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Progetto_paradigmi.Progetto.Application.Factories;
 using Progetto_paradigmi.Progetto.Application.Services;
-using Progetto_paradigmi.Progetto.Application.Factories;
 using Progetto_paradigmi.Progetto.Application.DTO;
-using Progetto_paradigmi.Progetto.Models.Responses;
 using Progetto_paradigmi.Progetto.Models.Entities;
-using System.Security.Claims;
 using Microsoft.Graph.Education.Classes.Item.Assignments.Item.Submissions.Item.Return;
 using Progetto_paradigmi.Progetto.Models.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Graph.Models;
+using System;
+using Progetto_paradigmi.Progetto.Application.Interfaces;
 
 namespace Progetto_paradigmi.Progetto.Web
 {
@@ -98,14 +97,19 @@ namespace Progetto_paradigmi.Progetto.Web
         }
 
 
-        [HttpGet("GetListsWithRecipients")]
-        public IActionResult GetRecipientLists([FromQuery] string recipientEmail)
+        [HttpGet("GetListsByRecipientEmail")]
+        public IActionResult GetRecipientLists([FromQuery] string recipientEmail, [FromQuery] GetDistributionListRequest request)
         {
             try
             {
                 int id = getTokenId();
-                var recipientLists = _distributionListService.GetRecipientLists(recipientEmail, id);
-                return Ok(recipientLists);
+                int totalNum = 0;
+                var recipientLists = _distributionListService.GetRecipientLists(recipientEmail, id, request.PageNumber * request.PageSize, request.PageSize, out totalNum);
+                var response = new GetDistributionListResponse();
+                var pageFound = (totalNum / (decimal)request.PageSize);
+                response.NumeroPagine = (int)Math.Ceiling(pageFound);
+                response.distributionList = recipientLists;
+                return Ok(response);
             }
             catch (Exception ex)
             {

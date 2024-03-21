@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Progetto_paradigmi.Progetto.Models.Responses
+namespace Progetto_paradigmi.Progetto.Application.Responses
 {
     public class BaseResponse<T>
     {
@@ -10,7 +10,5 @@ namespace Progetto_paradigmi.Progetto.Models.Responses
         public List<string>? Errors { get; set; } = null;
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public T? Result { get; set; } = default;
-
-
     }
 }

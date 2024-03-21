@@ -12,6 +12,9 @@ namespace Progetto_paradigmi.Progetto.Models.Entities
         public DistributionList()
         {
         }
+        public DistributionList(DistributionList distribution)
+        {
+        }
 
         public int Id { get; set; } 
 
@@ -29,7 +32,7 @@ namespace Progetto_paradigmi.Progetto.Models.Entities
         [JsonIgnore]
         public ICollection<RecipientsList> RecipientsLists { get; set; }
 
-
+        
 
     }
 }

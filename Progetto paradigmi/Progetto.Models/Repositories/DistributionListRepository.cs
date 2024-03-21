@@ -25,7 +25,5 @@ namespace Progetto_paradigmi.Progetto.Models.Repositories
             return _ctx.DistributionList.Where(dl => dl.Id == id).FirstOrDefault();
         }
 
-      
-
     }
 }

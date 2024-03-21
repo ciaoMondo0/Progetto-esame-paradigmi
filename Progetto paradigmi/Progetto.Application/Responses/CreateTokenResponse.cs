@@ -1,4 +1,4 @@
-﻿namespace Progetto_paradigmi.Progetto.Application.Interfaces
+﻿namespace Progetto_paradigmi.Progetto.Application.Responses
 {
     public class CreateTokenResponse
     {

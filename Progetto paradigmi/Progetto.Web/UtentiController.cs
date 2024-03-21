@@ -3,6 +3,7 @@ using Progetto_paradigmi.Progetto.Application.DTO;
 using Progetto_paradigmi.Progetto.Application.Interfaces;
 using Progetto_paradigmi.Progetto.Application.Services;
 using Progetto_paradigmi.Progetto.Application.Validators;
+using Progetto_paradigmi.Progetto.Application.Responses;
 
 namespace Progetto_paradigmi.Progetto.Web
 {
@@ -26,10 +27,17 @@ namespace Progetto_paradigmi.Progetto.Web
             var result = validator.Validate(userDto);
             if (result.IsValid)
             {
-                _userService.CreateUser(userDto);
-
-                return Ok();
-            } else
+                try
+                {
+                    _userService.CreateUser(userDto);
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+            else
             {
                 return BadRequest();
             }
@@ -84,9 +92,15 @@ namespace Progetto_paradigmi.Progetto.Web
         [Route("login")]
         public IActionResult LogIn(CreateTokenRequest tokenRequest)
         {
-            String token = _tokenService.CreateToken(tokenRequest);
-
-            return Ok(new CreateTokenResponse(token));
+            try
+            {
+                String token = _tokenService.CreateToken(tokenRequest);
+                return Ok(new CreateTokenResponse(token));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
         }
         
 
