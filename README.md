@@ -6,4 +6,4 @@
 6. Usare distributionListByOwner per ottenere tutte le liste di distribuzione che appartengono al proprietario
 7. Usare GetRecipientLists per ottenere le liste di distribuzione paginate associate all'email del destinatario con PageSize 1 e PageNumber 0 per visualizzare la prima pagina
 8. Per aggiungere o rimuovere destinatari dalla lista inserire l'id della lista di distribuzione e le email dei destinatari sotto forma di lista
-9. Per mandare le email modificare Subject per l'oggetto dell'email, body per il contenuto dell'email e l'id della lista di distribuzione a cui si vuole mandare le email
+9. Per mandare le email usare sendEmail e modificare Subject per l'oggetto dell'email, body per il contenuto dell'email e l'id della lista di distribuzione a cui si vuole mandare le email
